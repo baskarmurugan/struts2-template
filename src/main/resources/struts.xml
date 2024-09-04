@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" 
+    "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+    <package name="default" namespace="/" extends="struts-default">
+    
+      <interceptors>
+            <interceptor name="jwtInterceptor" class="com.struts_crud.interceptor.JwtInterceptor"/>
+            <interceptor-stack name="jwtStack">
+                <interceptor-ref name="jwtInterceptor"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <!-- Global results -->
+        <global-results>
+            <result name="login">/login.jsp</result>
+            <result name="unauthorized">/unauthorized.jsp</result>
+            <result name="sessionTimeout">/sessionTimeout.jsp</result>
+            <result name="userdashboard" type="redirectAction">viewUser</result>
+			<result name="login">/login.jsp</result>
+            <result name="admindashboard" type="redirectAction">listUsers</result>
+            
+            
+        </global-results>
+    
+    
+        <action name="login" class="com.struts_crud.action.LoginAction" method="login">
+            <result name="success" type="redirectAction">listUsers</result>
+            <result name="usersuccess" type="redirectAction">viewUser</result>
+            <result name="input">/login.jsp</result>
+            <result name="error">/error.jsp</result>
+            
+        </action>
+        <action name="logout" class="com.struts_crud.action.LogoutAction" method="logout">
+		<interceptor-ref name="jwtStack"/>
+   		 <result name="success">/login.jsp</result>
+		</action>
+		
+		 <action name="changePassword" class="com.struts_crud.action.UserAction" method="changePassword">
+    		<interceptor-ref name="jwtStack"/>
+    		<result name="unauthorized">/unauthorized.jsp</result>
+    		<result name="success">/changePassword.jsp</result>
+		</action>
+        
+        <action name="updatePassword" class="com.struts_crud.action.UserAction" method="updatePassword">
+    		<interceptor-ref name="jwtStack"/>
+    		<result name="unauthorized">/unauthorized.jsp</result>
+    		<result name="success" type="redirectAction">viewUser</result>
+    		<result name="input">/changePassword.jsp</result>
+    		<result name="error">/error.jsp</result>
+		</action>
+        
+        
+        <action name="registerUser" class="com.struts_crud.action.RegisterAction" method="registerUser">
+    		<result name="success">/register.jsp</result>
+		</action>
+
+        <action name="register" class="com.struts_crud.action.RegisterAction" method="register">
+            <result name="success">/login.jsp</result>
+            <result name="input">/register.jsp</result>
+        </action>
+        
+        <action name="viewUser" class="com.struts_crud.action.UserAction" method="viewUser">
+          <result name="success">/viewUser.jsp</result>
+          <result name="error">/error.jsp</result>
+            
+        </action>
+        
+        
+        <action name="listUsers" class="com.struts_crud.action.UserAction" method="listUser">
+        <interceptor-ref name="jwtStack"/>
+             <result name="unauthorized">/unauthorized.jsp</result>
+             <result name="success">/userList.jsp</result>
+             <result name="error">/error.jsp</result>
+            
+        </action>
+
+        <action name="createUser" class="com.struts_crud.action.UserAction" method="createUser">
+            <result name="success">/userList.jsp</result>
+            <result name="input">/userForm.jsp</result>
+        </action>
+
+         <action name="editUser" class="com.struts_crud.action.UserAction" method="editUser">
+         <interceptor-ref name="jwtStack"/>
+            <result name="unauthorized">/unauthorized.jsp</result> 
+            <result name="success">/userForm.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
+        <!-- Save the updated user details -->
+        <action name="updateUser" class="com.struts_crud.action.UserAction" method="updateUser">
+        <interceptor-ref name="jwtStack"/>
+            <result name="unauthorized">/unauthorized.jsp</result> <!-- Unauthorized access result -->
+            <result name="success" type="redirectAction">listUsers</result>
+            <result name="input">/userForm.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
+        <action name="deleteUser" class="com.struts_crud.action.UserAction" method="deleteUser">
+        <interceptor-ref name="jwtStack"/>
+            <result name="success" type="redirectAction">listUsers</result>
+            <result name="unauthorized">/unauthorized.jsp</result> <!-- Unauthorized access result -->
+            
+        </action>
+        
+
+    </package>
+</struts>
